@@ -570,6 +570,7 @@ function switchSettingsTab(tab) {
 }
 
 async function loadSettings() {
+  switchSettingsTab('users'); // Ensure first tab is active
   loadUsers();
   loadLandingSettings();
   loadLogoPreview();

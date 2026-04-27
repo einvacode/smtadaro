@@ -568,83 +568,7 @@
           </button>
         </div>
 
-        <!-- TAB: User Management (active below) -->
-        <div class="stab-content" id="stab-content-logs">
-          <!-- ... existing ... -->
-        </div>
-
-        <!-- TAB: System Update -->
-        <div class="stab-content" id="stab-content-update">
-          <div class="section-header">
-            <h3>Update Aplikasi</h3>
-            <span class="backup-tag" id="currentVersionTag">v1.0.0</span>
-          </div>
-          <p class="form-desc">Cek dan perbarui aplikasi langsung dari GitHub repository.</p>
-          
-          <div class="settings-form-card" style="max-width: 600px;">
-            <div id="updateStatusArea" style="text-align: center; padding: 20px 0;">
-              <div id="updateChecking">
-                <p style="color: var(--text-secondary); margin-bottom: 20px;">Menghubungkan ke GitHub...</p>
-                <div class="loading-spinner" style="margin: 0 auto;"></div>
-              </div>
-              
-              <div id="updateInfo" style="display: none;">
-                <div class="update-icon" style="font-size: 3rem; margin-bottom: 15px;">🚀</div>
-                <h4 id="updateTitle" style="margin-bottom: 10px;">Versi Terbaru Tersedia!</h4>
-                <p id="updateDesc" style="color: var(--text-secondary); margin-bottom: 24px;">Versi <span id="remoteVersion">1.0.1</span> sudah tersedia di GitHub.</p>
-                <div style="display: flex; gap: 12px; justify-content: center;">
-                  <button class="btn btn-primary" onclick="runUpdate()" id="btnRunUpdate">Update Sekarang</button>
-                  <button class="btn btn-glass" onclick="checkUpdate()">Cek Ulang</button>
-                </div>
-              </div>
-
-              <div id="updateNone" style="display: none;">
-                <div class="update-icon" style="font-size: 3rem; margin-bottom: 15px;">✅</div>
-                <h4 style="margin-bottom: 10px;">Aplikasi Sudah Terbaru</h4>
-                <p style="color: var(--text-secondary); margin-bottom: 24px;">Anda menggunakan versi terbaru dari repository.</p>
-                <button class="btn btn-glass" onclick="checkUpdate()">Cek Ulang</button>
-              </div>
-
-              <div id="updateProgress" style="display: none;">
-                <p style="color: var(--accent-cyan); font-weight: 600; margin-bottom: 10px;">Mengunduh Update...</p>
-                <div class="progress-bar-container" style="margin-bottom: 15px;">
-                  <div class="progress-bar-fill" style="width: 100%; animation: progress-stripes 2s linear infinite;"></div>
-                </div>
-                <p style="color: var(--text-muted); font-size: 0.85rem;">Mohon jangan tutup halaman ini.</p>
-              </div>
-            </div>
-          </div>
-
-          <div id="updateOutput" style="margin-top: 24px; display: none;">
-            <h4 style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 10px;">Git Output:</h4>
-            <pre id="updateOutputText" style="background: rgba(0,0,0,0.3); padding: 16px; border-radius: var(--radius-sm); font-size: 0.8rem; font-family: 'JetBrains Mono', monospace; color: var(--green); overflow-x: auto; border: 1px solid var(--border);"></pre>
-          </div>
-        </div>
-          <div class="section-header">
-            <h3>System Audit Logs</h3>
-            <button class="btn btn-glass btn-sm" onclick="loadAuditLogs()">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
-              Refresh
-            </button>
-          </div>
-          <p class="form-desc">History aksi administratif 100 terakhir</p>
-          <div class="device-table-container">
-            <table class="device-table" id="logsTable">
-              <thead>
-                <tr>
-                  <th>Waktu</th>
-                  <th>User</th>
-                  <th>Aksi</th>
-                  <th>Detail</th>
-                  <th>IP Address</th>
-                </tr>
-              </thead>
-              <tbody id="logsTableBody">
-                <tr><td colspan="5" class="empty-cell">Loading logs...</td></tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
+        <!-- TAB: User Management -->
         <div class="stab-content active" id="stab-content-users">
           <div class="section-header">
             <h3>Daftar User</h3>
@@ -751,6 +675,82 @@
                 </div>
               </div>
             </div>
+          </div>
+        </div>
+
+        <!-- TAB: System Logs -->
+        <div class="stab-content" id="stab-content-logs">
+          <div class="section-header">
+            <h3>System Audit Logs</h3>
+            <button class="btn btn-glass btn-sm" onclick="loadAuditLogs()">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+              Refresh
+            </button>
+          </div>
+          <p class="form-desc">History aksi administratif 100 terakhir</p>
+          <div class="device-table-container">
+            <table class="device-table" id="logsTable">
+              <thead>
+                <tr>
+                  <th>Waktu</th>
+                  <th>User</th>
+                  <th>Aksi</th>
+                  <th>Detail</th>
+                  <th>IP Address</th>
+                </tr>
+              </thead>
+              <tbody id="logsTableBody">
+                <tr><td colspan="5" class="empty-cell">Loading logs...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- TAB: System Update -->
+        <div class="stab-content" id="stab-content-update">
+          <div class="section-header">
+            <h3>Update Aplikasi</h3>
+            <span class="backup-tag" id="currentVersionTag">v1.0.0</span>
+          </div>
+          <p class="form-desc">Cek dan perbarui aplikasi langsung dari GitHub repository.</p>
+          
+          <div class="settings-form-card" style="max-width: 600px;">
+            <div id="updateStatusArea" style="text-align: center; padding: 20px 0;">
+              <div id="updateChecking">
+                <p style="color: var(--text-secondary); margin-bottom: 20px;">Menghubungkan ke GitHub...</p>
+                <div class="loading-spinner" style="margin: 0 auto;"></div>
+              </div>
+              
+              <div id="updateInfo" style="display: none;">
+                <div class="update-icon" style="font-size: 3rem; margin-bottom: 15px;">🚀</div>
+                <h4 id="updateTitle" style="margin-bottom: 10px;">Versi Terbaru Tersedia!</h4>
+                <p id="updateDesc" style="color: var(--text-secondary); margin-bottom: 24px;">Versi <span id="remoteVersion">1.0.1</span> sudah tersedia di GitHub.</p>
+                <div style="display: flex; gap: 12px; justify-content: center;">
+                  <button class="btn btn-primary" onclick="runUpdate()" id="btnRunUpdate">Update Sekarang</button>
+                  <button class="btn btn-glass" onclick="checkUpdate()">Cek Ulang</button>
+                </div>
+              </div>
+
+              <div id="updateNone" style="display: none;">
+                <div class="update-icon" style="font-size: 3rem; margin-bottom: 15px;">✅</div>
+                <h4 style="margin-bottom: 10px;">Aplikasi Sudah Terbaru</h4>
+                <p style="color: var(--text-secondary); margin-bottom: 24px;">Anda menggunakan versi terbaru dari repository.</p>
+                <button class="btn btn-glass" onclick="checkUpdate()">Cek Ulang</button>
+              </div>
+
+              <div id="updateProgress" style="display: none;">
+                <p style="color: var(--accent-cyan); font-weight: 600; margin-bottom: 10px;">Mengunduh Update...</p>
+                <div class="progress-bar-container" style="margin-bottom: 15px;">
+                  <div class="progress-bar-fill" style="width: 100%; animation: progress-stripes 2s linear infinite;"></div>
+                </div>
+                <p style="color: var(--text-muted); font-size: 0.85rem;">Mohon jangan tutup halaman ini.</p>
+              </div>
+            </div>
+          </div>
+
+          <div id="updateOutput" style="margin-top: 24px; display: none;">
+            <h4 style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 10px;">Git Output:</h4>
+            <pre id="updateOutputText" style="background: rgba(0,0,0,0.3); padding: 16px; border-radius: var(--radius-sm); font-size: 0.8rem; font-family: 'JetBrains Mono', monospace; color: var(--green); overflow-x: auto; border: 1px solid var(--border);"></pre>
           </div>
         </div>
       </section>

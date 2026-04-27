@@ -1,0 +1,14 @@
+version: '3.8'
+
+services:
+  marine-cctv:
+    build: .
+    container_name: marine-cctv
+    restart: always
+    ports:
+      - "3099:3099"
+    volumes:
+      - ./data:/app/data
+    environment:
+      - NODE_ENV=production
+      - PORT=3099

@@ -1,0 +1,9 @@
+node_modules
+npm-debug.log
+data/*
+!data/.gitkeep
+.git
+.env
+Dockerfile
+docker-compose.yml
+README.md

@@ -9,9 +9,10 @@ const previousStates = new Map();
  */
 async function pingDevice(device) {
   try {
+    const isWin = process.platform === 'win32';
     const result = await ping.promise.probe(device.ip_address, {
       timeout: 5,
-      extra: ['-n', '1'], // Windows: -n, Linux: -c
+      extra: isWin ? ['-n', '1'] : ['-c', '1'],
     });
 
     const status = result.alive ? 'online' : 'offline';

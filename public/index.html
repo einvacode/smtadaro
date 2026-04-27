@@ -1,0 +1,809 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Marine CCTV Dashboard - Real-time NVR monitoring system with uptime tracking and ping diagnostics for maritime surveillance infrastructure">
+  <title>Marine CCTV Dashboard | NVR Monitoring System</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <!-- Animated Background -->
+  <div class="bg-ocean">
+    <div class="wave wave-1"></div>
+    <div class="wave wave-2"></div>
+    <div class="wave wave-3"></div>
+    <div class="bg-particles" id="particles"></div>
+  </div>
+
+  <!-- App Container -->
+  <div id="app">
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <div class="logo-container">
+          <div class="logo-icon">
+            <svg viewBox="0 0 40 40" fill="none">
+              <circle cx="20" cy="20" r="18" stroke="url(#logoGrad)" stroke-width="2.5"/>
+              <circle cx="20" cy="20" r="8" fill="url(#logoGrad)"/>
+              <circle cx="20" cy="20" r="4" fill="#0a0f1e"/>
+              <line x1="20" y1="2" x2="20" y2="8" stroke="url(#logoGrad)" stroke-width="2" stroke-linecap="round"/>
+              <line x1="38" y1="20" x2="32" y2="20" stroke="url(#logoGrad)" stroke-width="2" stroke-linecap="round"/>
+              <line x1="20" y1="38" x2="20" y2="32" stroke="url(#logoGrad)" stroke-width="2" stroke-linecap="round"/>
+              <line x1="2" y1="20" x2="8" y2="20" stroke="url(#logoGrad)" stroke-width="2" stroke-linecap="round"/>
+              <defs>
+                <linearGradient id="logoGrad" x1="0" y1="0" x2="40" y2="40">
+                  <stop offset="0%" stop-color="#00d4ff"/>
+                  <stop offset="100%" stop-color="#0099ff"/>
+                </linearGradient>
+              </defs>
+            </svg>
+          </div>
+          <div class="logo-text">
+            <h1>MarineCCTV</h1>
+            <span>Monitoring System</span>
+          </div>
+        </div>
+      </div>
+
+      <nav class="sidebar-nav">
+        <a href="#" class="nav-item active" data-page="dashboard" id="nav-dashboard">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="3" y="3" width="7" height="7" rx="1.5"/>
+            <rect x="14" y="3" width="7" height="7" rx="1.5"/>
+            <rect x="3" y="14" width="7" height="7" rx="1.5"/>
+            <rect x="14" y="14" width="7" height="7" rx="1.5"/>
+          </svg>
+          <span>Dashboard</span>
+        </a>
+        <a href="#" class="nav-item" data-page="devices" id="nav-devices">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="2" y="3" width="20" height="14" rx="2"/>
+            <line x1="8" y1="21" x2="16" y2="21"/>
+            <line x1="12" y1="17" x2="12" y2="21"/>
+          </svg>
+          <span>NVR Devices</span>
+        </a>
+        <a href="#" class="nav-item" data-page="uptime" id="nav-uptime">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+          </svg>
+          <span>Uptime Monitor</span>
+        </a>
+        <a href="#" class="nav-item" data-page="alerts" id="nav-alerts">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+            <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+          </svg>
+          <span>Alerts</span>
+          <span class="nav-badge" id="alertBadge" style="display:none;">0</span>
+        </a>
+
+        <div class="nav-divider"></div>
+
+        <a href="#" class="nav-item" data-page="backup" id="nav-backup">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+            <polyline points="7 10 12 15 17 10"/>
+            <line x1="12" y1="15" x2="12" y2="3"/>
+          </svg>
+          <span>Backup</span>
+        </a>
+        <a href="#" class="nav-item" data-page="settings" id="nav-settings">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="3"/>
+            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+          </svg>
+          <span>Settings</span>
+        </a>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="user-info" id="userInfo" style="display:none;">
+          <div class="user-avatar">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          </div>
+          <div class="user-meta">
+            <span class="user-name">User</span>
+            <span class="user-role">role</span>
+          </div>
+          <button class="btn-logout" onclick="logout()" title="Logout" id="btn-logout">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+          </button>
+        </div>
+        <div class="system-status">
+          <div class="status-dot online"></div>
+          <span>System Active</span>
+        </div>
+        <div class="last-update" id="lastUpdate">
+          Last update: --:--:--
+        </div>
+      </div>
+    </aside>
+
+    <!-- Mobile Sidebar Toggle -->
+    <button class="sidebar-toggle" id="sidebarToggle">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <line x1="3" y1="6" x2="21" y2="6"/>
+        <line x1="3" y1="12" x2="21" y2="12"/>
+        <line x1="3" y1="18" x2="21" y2="18"/>
+      </svg>
+    </button>
+
+    <!-- Main Content -->
+    <main class="main-content" id="mainContent">
+
+      <!-- ===== DASHBOARD PAGE ===== -->
+      <section class="page active" id="page-dashboard">
+        <div class="page-header">
+          <div>
+            <h2>Dashboard Overview</h2>
+            <p class="page-subtitle">Real-time monitoring marine CCTV infrastructure</p>
+          </div>
+          <div class="header-actions">
+            <button class="btn btn-glass" onclick="refreshAll()" id="btn-refresh-all">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="icon-spin" id="refreshIcon">
+                <polyline points="23 4 23 10 17 10"/>
+                <polyline points="1 20 1 14 7 14"/>
+                <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/>
+              </svg>
+              Refresh All
+            </button>
+          </div>
+        </div>
+
+        <!-- KPI Cards -->
+        <div class="kpi-grid">
+          <div class="kpi-card" id="kpi-total">
+            <div class="kpi-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="2" y="3" width="20" height="14" rx="2"/>
+                <line x1="8" y1="21" x2="16" y2="21"/>
+                <line x1="12" y1="17" x2="12" y2="21"/>
+              </svg>
+            </div>
+            <div class="kpi-data">
+              <span class="kpi-value" id="kpiTotal">0</span>
+              <span class="kpi-label">Total NVR</span>
+            </div>
+            <div class="kpi-glow kpi-glow-blue"></div>
+          </div>
+
+          <div class="kpi-card" id="kpi-online">
+            <div class="kpi-icon kpi-icon-green">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+                <polyline points="22 4 12 14.01 9 11.01"/>
+              </svg>
+            </div>
+            <div class="kpi-data">
+              <span class="kpi-value" id="kpiOnline">0</span>
+              <span class="kpi-label">Online</span>
+            </div>
+            <div class="kpi-glow kpi-glow-green"></div>
+          </div>
+
+          <div class="kpi-card" id="kpi-offline">
+            <div class="kpi-icon kpi-icon-red">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10"/>
+                <line x1="15" y1="9" x2="9" y2="15"/>
+                <line x1="9" y1="9" x2="15" y2="15"/>
+              </svg>
+            </div>
+            <div class="kpi-data">
+              <span class="kpi-value" id="kpiOffline">0</span>
+              <span class="kpi-label">Offline</span>
+            </div>
+            <div class="kpi-glow kpi-glow-red"></div>
+          </div>
+
+          <div class="kpi-card" id="kpi-uptime">
+            <div class="kpi-icon kpi-icon-cyan">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+              </svg>
+            </div>
+            <div class="kpi-data">
+              <span class="kpi-value" id="kpiUptime">0%</span>
+              <span class="kpi-label">Uptime (24h)</span>
+            </div>
+            <div class="kpi-glow kpi-glow-cyan"></div>
+          </div>
+
+          <div class="kpi-card" id="kpi-latency">
+            <div class="kpi-icon kpi-icon-purple">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10"/>
+                <polyline points="12 6 12 12 16 14"/>
+              </svg>
+            </div>
+            <div class="kpi-data">
+              <span class="kpi-value" id="kpiLatency">0ms</span>
+              <span class="kpi-label">Avg Latency</span>
+            </div>
+            <div class="kpi-glow kpi-glow-purple"></div>
+          </div>
+
+          <div class="kpi-card" id="kpi-alerts">
+            <div class="kpi-icon kpi-icon-orange">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+                <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+              </svg>
+            </div>
+            <div class="kpi-data">
+              <span class="kpi-value" id="kpiAlerts">0</span>
+              <span class="kpi-label">Active Alerts</span>
+            </div>
+            <div class="kpi-glow kpi-glow-orange"></div>
+          </div>
+        </div>
+
+        <!-- Device Status Grid -->
+        <div class="section-header">
+          <h3>NVR Device Status</h3>
+          <span class="section-badge" id="deviceCountBadge">0 devices</span>
+        </div>
+        <div class="device-grid" id="dashboardDeviceGrid">
+          <div class="empty-state">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="64" height="64">
+              <rect x="2" y="3" width="20" height="14" rx="2"/>
+              <line x1="8" y1="21" x2="16" y2="21"/>
+              <line x1="12" y1="17" x2="12" y2="21"/>
+            </svg>
+            <h4>No devices configured</h4>
+            <p>Add NVR devices to start monitoring</p>
+            <button class="btn btn-primary" onclick="navigateTo('devices')">Add Device</button>
+          </div>
+        </div>
+
+        <!-- Recent Alerts -->
+        <div class="section-header" style="margin-top:2rem;">
+          <h3>Recent Alerts</h3>
+          <a href="#" class="link-btn" onclick="navigateTo('alerts')">View All →</a>
+        </div>
+        <div class="alerts-list" id="dashboardAlerts">
+          <div class="empty-state-sm">
+            <p>No recent alerts</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== DEVICES PAGE ===== -->
+      <section class="page" id="page-devices">
+        <div class="page-header">
+          <div>
+            <h2>NVR Device Management</h2>
+            <p class="page-subtitle">Manage and configure NVR devices for monitoring</p>
+          </div>
+          <div class="header-actions">
+            <button class="btn btn-primary" onclick="openDeviceModal()" id="btn-add-device">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18">
+                <line x1="12" y1="5" x2="12" y2="19"/>
+                <line x1="5" y1="12" x2="19" y2="12"/>
+              </svg>
+              Add NVR Device
+            </button>
+          </div>
+        </div>
+
+        <div class="device-table-container">
+          <table class="device-table" id="deviceTable">
+            <thead>
+              <tr>
+                <th>Status</th>
+                <th>Device Name</th>
+                <th>IP Address</th>
+                <th>Location</th>
+                <th>Type</th>
+                <th>Channels</th>
+                <th>Latency</th>
+                <th>Last Check</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="deviceTableBody">
+              <tr>
+                <td colspan="9" class="empty-cell">No devices configured yet</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- ===== UPTIME PAGE ===== -->
+      <section class="page" id="page-uptime">
+        <div class="page-header">
+          <div>
+            <h2>Uptime Monitoring</h2>
+            <p class="page-subtitle">Track device availability and response time metrics</p>
+          </div>
+          <div class="header-actions">
+            <select class="select-glass" id="uptimeDeviceSelect" onchange="loadUptimeData()">
+              <option value="">Select Device</option>
+            </select>
+            <select class="select-glass" id="uptimePeriodSelect" onchange="loadUptimeData()">
+              <option value="24">Last 24 Hours</option>
+              <option value="72">Last 3 Days</option>
+              <option value="168">Last 7 Days</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Uptime Summary Cards -->
+        <div class="uptime-summary" id="uptimeSummary" style="display:none;">
+          <div class="uptime-card">
+            <div class="uptime-ring" id="uptimeRing24h">
+              <svg viewBox="0 0 120 120">
+                <circle cx="60" cy="60" r="52" stroke="rgba(255,255,255,0.06)" stroke-width="8" fill="none"/>
+                <circle cx="60" cy="60" r="52" stroke="url(#uptimeGrad)" stroke-width="8" fill="none"
+                  stroke-linecap="round" stroke-dasharray="326.73" stroke-dashoffset="326.73"
+                  transform="rotate(-90 60 60)" class="uptime-progress" id="uptimeProgress24h"/>
+                <defs>
+                  <linearGradient id="uptimeGrad" x1="0" y1="0" x2="1" y2="1">
+                    <stop offset="0%" stop-color="#00d4ff"/>
+                    <stop offset="100%" stop-color="#00ff88"/>
+                  </linearGradient>
+                </defs>
+              </svg>
+              <div class="uptime-ring-value" id="uptimeValue24h">--%</div>
+            </div>
+            <span class="uptime-card-label">24 Hours</span>
+          </div>
+          <div class="uptime-card">
+            <div class="uptime-ring" id="uptimeRing7d">
+              <svg viewBox="0 0 120 120">
+                <circle cx="60" cy="60" r="52" stroke="rgba(255,255,255,0.06)" stroke-width="8" fill="none"/>
+                <circle cx="60" cy="60" r="52" stroke="url(#uptimeGrad2)" stroke-width="8" fill="none"
+                  stroke-linecap="round" stroke-dasharray="326.73" stroke-dashoffset="326.73"
+                  transform="rotate(-90 60 60)" class="uptime-progress" id="uptimeProgress7d"/>
+                <defs>
+                  <linearGradient id="uptimeGrad2" x1="0" y1="0" x2="1" y2="1">
+                    <stop offset="0%" stop-color="#6366f1"/>
+                    <stop offset="100%" stop-color="#a78bfa"/>
+                  </linearGradient>
+                </defs>
+              </svg>
+              <div class="uptime-ring-value" id="uptimeValue7d">--%</div>
+            </div>
+            <span class="uptime-card-label">7 Days</span>
+          </div>
+          <div class="uptime-card">
+            <div class="uptime-ring" id="uptimeRing30d">
+              <svg viewBox="0 0 120 120">
+                <circle cx="60" cy="60" r="52" stroke="rgba(255,255,255,0.06)" stroke-width="8" fill="none"/>
+                <circle cx="60" cy="60" r="52" stroke="url(#uptimeGrad3)" stroke-width="8" fill="none"
+                  stroke-linecap="round" stroke-dasharray="326.73" stroke-dashoffset="326.73"
+                  transform="rotate(-90 60 60)" class="uptime-progress" id="uptimeProgress30d"/>
+                <defs>
+                  <linearGradient id="uptimeGrad3" x1="0" y1="0" x2="1" y2="1">
+                    <stop offset="0%" stop-color="#f59e0b"/>
+                    <stop offset="100%" stop-color="#ef4444"/>
+                  </linearGradient>
+                </defs>
+              </svg>
+              <div class="uptime-ring-value" id="uptimeValue30d">--%</div>
+            </div>
+            <span class="uptime-card-label">30 Days</span>
+          </div>
+          <div class="uptime-stats-detail">
+            <div class="stat-row">
+              <span class="stat-label">Total Checks (24h)</span>
+              <span class="stat-value" id="statTotalChecks">--</span>
+            </div>
+            <div class="stat-row">
+              <span class="stat-label">Online Checks</span>
+              <span class="stat-value stat-green" id="statOnlineChecks">--</span>
+            </div>
+            <div class="stat-row">
+              <span class="stat-label">Avg Response Time</span>
+              <span class="stat-value stat-cyan" id="statAvgResponse">--</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Response Time Chart -->
+        <div class="chart-container" id="chartContainer" style="display:none;">
+          <div class="chart-header">
+            <h3>Response Time History</h3>
+          </div>
+          <div class="chart-wrapper">
+            <canvas id="responseChart" width="800" height="300"></canvas>
+          </div>
+        </div>
+
+        <!-- Ping History Timeline -->
+        <div class="timeline-container" id="timelineContainer" style="display:none;">
+          <div class="chart-header">
+            <h3>Uptime Timeline</h3>
+          </div>
+          <div class="uptime-timeline" id="uptimeTimeline"></div>
+        </div>
+
+        <div class="empty-state" id="uptimeEmptyState">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="64" height="64">
+            <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+          </svg>
+          <h4>Select a device to view uptime data</h4>
+          <p>Choose an NVR device from the dropdown above</p>
+        </div>
+      </section>
+
+      <!-- ===== ALERTS PAGE ===== -->
+      <section class="page" id="page-alerts">
+        <div class="page-header">
+          <div>
+            <h2>Alert Center</h2>
+            <p class="page-subtitle">Monitor system alerts and notifications</p>
+          </div>
+          <div class="header-actions">
+            <button class="btn btn-glass" onclick="markAllAlertsRead()" id="btn-mark-read">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18">
+                <polyline points="9 11 12 14 22 4"/>
+                <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>
+              </svg>
+              Mark All Read
+            </button>
+          </div>
+        </div>
+
+        <div class="alerts-full-list" id="alertsFullList">
+          <div class="empty-state">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="64" height="64">
+              <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+              <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+            </svg>
+            <h4>No alerts</h4>
+            <p>All systems are running smoothly</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== BACKUP PAGE ===== -->
+      <section class="page" id="page-backup">
+        <div class="page-header">
+          <div>
+            <h2>Backup & Restore</h2>
+            <p class="page-subtitle">Kelola backup database sistem monitoring</p>
+          </div>
+          <div class="header-actions">
+            <button class="btn btn-primary" onclick="createBackup()" id="btn-create-backup">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                <polyline points="17 8 12 3 7 8"/>
+                <line x1="12" y1="3" x2="12" y2="15"/>
+              </svg>
+              Create Backup
+            </button>
+          </div>
+        </div>
+
+        <!-- Backup Info Cards -->
+        <div class="backup-info-grid" id="backupInfoGrid">
+          <div class="backup-info-card">
+            <div class="backup-info-icon bic-blue">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg>
+            </div>
+            <div>
+              <span class="backup-info-value" id="backupDbSize">--</span>
+              <span class="backup-info-label">Database Size</span>
+            </div>
+          </div>
+          <div class="backup-info-card">
+            <div class="backup-info-icon bic-green">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            </div>
+            <div>
+              <span class="backup-info-value" id="backupCount">0</span>
+              <span class="backup-info-label">Total Backups</span>
+            </div>
+          </div>
+          <div class="backup-info-card">
+            <div class="backup-info-icon bic-purple">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+            </div>
+            <div>
+              <span class="backup-info-value" id="backupTotalSize">--</span>
+              <span class="backup-info-label">Backup Storage</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Backup List -->
+        <div class="section-header" style="margin-top:28px;">
+          <h3>Backup History</h3>
+          <button class="btn btn-glass btn-sm" onclick="loadBackups()" id="btn-refresh-backups">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+            Refresh
+          </button>
+        </div>
+
+        <div class="backup-list" id="backupList">
+          <div class="empty-state">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="64" height="64">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+              <polyline points="7 10 12 15 17 10"/>
+              <line x1="12" y1="15" x2="12" y2="3"/>
+            </svg>
+            <h4>Belum ada backup</h4>
+            <p>Klik "Create Backup" untuk membuat backup pertama</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== SETTINGS PAGE ===== -->
+      <section class="page" id="page-settings">
+        <div class="page-header">
+          <div>
+            <h2>Settings</h2>
+            <p class="page-subtitle">Kelola user, landing page, dan branding</p>
+          </div>
+        </div>
+
+        <!-- Settings Tabs -->
+        <div class="settings-tabs">
+          <button class="stab active" data-stab="users" onclick="switchSettingsTab('users')" id="stab-users">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+            User Management
+          </button>
+          <button class="stab" data-stab="landing" onclick="switchSettingsTab('landing')" id="stab-landing">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+            Landing Page
+          </button>
+          <button class="stab" data-stab="logo" onclick="switchSettingsTab('logo')" id="stab-logo">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+            Logo & Branding
+          </button>
+          <button class="stab" data-stab="logs" onclick="switchSettingsTab('logs')" id="stab-logs">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+            System Logs
+          </button>
+        </div>
+
+        <!-- TAB: User Management (active below) -->
+        <div class="stab-content" id="stab-content-logs">
+          <div class="section-header">
+            <h3>System Audit Logs</h3>
+            <button class="btn btn-glass btn-sm" onclick="loadAuditLogs()">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+              Refresh
+            </button>
+          </div>
+          <p class="form-desc">History aksi administratif 100 terakhir</p>
+          <div class="device-table-container">
+            <table class="device-table" id="logsTable">
+              <thead>
+                <tr>
+                  <th>Waktu</th>
+                  <th>User</th>
+                  <th>Aksi</th>
+                  <th>Detail</th>
+                  <th>IP Address</th>
+                </tr>
+              </thead>
+              <tbody id="logsTableBody">
+                <tr><td colspan="5" class="empty-cell">Loading logs...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="stab-content active" id="stab-content-users">
+          <div class="section-header">
+            <h3>Daftar User</h3>
+            <button class="btn btn-primary" onclick="openUserModal()" id="btn-add-user">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              Tambah User
+            </button>
+          </div>
+          <div class="device-table-container">
+            <table class="device-table" id="userTable">
+              <thead>
+                <tr>
+                  <th>Status</th>
+                  <th>Username</th>
+                  <th>Nama Lengkap</th>
+                  <th>Role</th>
+                  <th>Dibuat</th>
+                  <th>Login Terakhir</th>
+                  <th>Aksi</th>
+                </tr>
+              </thead>
+              <tbody id="userTableBody">
+                <tr><td colspan="7" class="empty-cell">Loading...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- TAB: Landing Page Settings -->
+        <div class="stab-content" id="stab-content-landing">
+          <div class="settings-form-container">
+            <div class="settings-form-card">
+              <h3>Konten Landing Page</h3>
+              <p class="form-desc">Edit teks dan konten yang tampil di halaman publik</p>
+              <form id="landingForm" onsubmit="saveLandingSettings(event)">
+                <div class="form-group">
+                  <label for="setAppName">Nama Aplikasi</label>
+                  <input type="text" id="setAppName" placeholder="MarineCCTV">
+                </div>
+                <div class="form-group">
+                  <label for="setHeroBadge">Hero Badge Text</label>
+                  <input type="text" id="setHeroBadge" placeholder="MONITORING SYSTEM ACTIVE">
+                </div>
+                <div class="form-row">
+                  <div class="form-group">
+                    <label for="setHeroTitle1">Hero Judul Baris 1</label>
+                    <input type="text" id="setHeroTitle1" placeholder="Maritime CCTV">
+                  </div>
+                  <div class="form-group">
+                    <label for="setHeroTitle2">Hero Judul Baris 2 (gradient)</label>
+                    <input type="text" id="setHeroTitle2" placeholder="Infrastructure Monitoring">
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label for="setHeroDesc">Deskripsi Hero</label>
+                  <textarea id="setHeroDesc" rows="3" placeholder="Deskripsi platform..."></textarea>
+                </div>
+                <div class="form-row">
+                  <div class="form-group">
+                    <label for="setCtaTitle">CTA Judul</label>
+                    <input type="text" id="setCtaTitle" placeholder="Mulai Monitoring Sekarang">
+                  </div>
+                  <div class="form-group">
+                    <label for="setCtaDesc">CTA Deskripsi</label>
+                    <input type="text" id="setCtaDesc" placeholder="Akses dashboard...">
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label for="setFooter">Footer Text</label>
+                  <input type="text" id="setFooter" placeholder="© 2026 MarineCCTV...">
+                </div>
+                <div class="modal-footer" style="margin-top: 8px;">
+                  <button type="submit" class="btn btn-primary" id="btn-save-landing">Simpan Perubahan</button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+
+        <!-- TAB: Logo & Branding -->
+        <div class="stab-content" id="stab-content-logo">
+          <div class="settings-form-container">
+            <div class="settings-form-card">
+              <h3>Logo Perusahaan</h3>
+              <p class="form-desc">Upload logo yang akan tampil di landing page, login, dan dashboard. Format: PNG, JPG, SVG. Max 5MB.</p>
+              <div class="logo-upload-area">
+                <div class="logo-preview-box" id="logoPreviewBox">
+                  <div class="logo-placeholder" id="logoPlaceholder">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="48" height="48"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+                    <span>Belum ada logo</span>
+                  </div>
+                  <img id="logoPreviewImg" src="" alt="Logo" style="display:none;">
+                </div>
+                <div class="logo-upload-controls">
+                  <label for="logoFileInput" class="btn btn-primary" id="btn-upload-logo">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                    Upload Logo
+                  </label>
+                  <input type="file" id="logoFileInput" accept="image/*" onchange="uploadLogo(this)" style="display:none;">
+                  <button class="btn btn-danger" onclick="deleteLogo()" id="btn-delete-logo">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+                    Hapus Logo
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- Device Modal -->
+  <div class="modal-overlay" id="deviceModal">
+
+  <!-- User Modal -->
+  <div class="modal-overlay" id="userModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3 id="userModalTitle">Tambah User</h3>
+        <button class="btn-close" onclick="closeUserModal()" id="btn-close-user-modal">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+      <form id="userForm" onsubmit="saveUser(event)">
+        <input type="hidden" id="editUserId">
+        <div class="form-group">
+          <label for="editUsername">Username *</label>
+          <input type="text" id="editUsername" placeholder="e.g. operator1" required>
+        </div>
+        <div class="form-group">
+          <label for="editFullName">Nama Lengkap</label>
+          <input type="text" id="editFullName" placeholder="e.g. John Doe">
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="editUserRole">Role</label>
+            <select id="editUserRole">
+              <option value="admin">Admin</option>
+              <option value="operator" selected>Operator</option>
+              <option value="viewer">Viewer</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="editUserPassword">Password <span id="pwdHint" style="font-weight:400;color:var(--text-muted);"></span></label>
+            <input type="password" id="editUserPassword" placeholder="••••••••">
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-ghost" onclick="closeUserModal()">Batal</button>
+          <button type="submit" class="btn btn-primary" id="btn-save-user">Simpan</button>
+        </div>
+      </form>
+    </div>
+  </div>
+    <div class="modal">
+      <div class="modal-header">
+        <h3 id="modalTitle">Add NVR Device</h3>
+        <button class="btn-close" onclick="closeDeviceModal()" id="btn-close-modal">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="6" x2="6" y2="18"/>
+            <line x1="6" y1="6" x2="18" y2="18"/>
+          </svg>
+        </button>
+      </div>
+      <form id="deviceForm" onsubmit="saveDevice(event)">
+        <input type="hidden" id="deviceId">
+        <div class="form-group">
+          <label for="deviceName">Device Name *</label>
+          <input type="text" id="deviceName" placeholder="e.g. NVR Wharf Area 1" required>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="deviceIp">IP Address *</label>
+            <input type="text" id="deviceIp" placeholder="e.g. 192.168.1.100" required
+              pattern="^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$">
+          </div>
+          <div class="form-group">
+            <label for="deviceType">Device Type</label>
+            <select id="deviceType">
+              <option value="NVR">NVR</option>
+              <option value="DVR">DVR</option>
+              <option value="IP Camera">IP Camera</option>
+              <option value="Switch">Switch</option>
+              <option value="Router">Router</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="deviceLocation">Location</label>
+            <input type="text" id="deviceLocation" placeholder="e.g. Port Terminal Building A">
+          </div>
+          <div class="form-group">
+            <label for="deviceChannels">Channel Count</label>
+            <input type="number" id="deviceChannels" placeholder="e.g. 16" min="0" max="128">
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="deviceDesc">Description</label>
+          <textarea id="deviceDesc" placeholder="Additional notes about this device..." rows="3"></textarea>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-ghost" onclick="closeDeviceModal()">Cancel</button>
+          <button type="submit" class="btn btn-primary" id="btn-save-device">Save Device</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Toast Container -->
+  <div class="toast-container" id="toastContainer"></div>
+
+  <script src="app.js"></script>
+</body>
+</html>

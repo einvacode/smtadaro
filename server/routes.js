@@ -2,6 +2,10 @@ const express = require('express');
 const db = require('./database');
 const { pingDevice, pingAllDevices } = require('./pingService');
 const { logAction } = require('./auth');
+const { exec } = require('child_process');
+const https = require('https');
+const pathModule = require('path');
+const fs = require('fs');
 
 const router = express.Router();
 
@@ -277,9 +281,6 @@ router.delete('/api/alerts/:id', (req, res) => {
 // ========================
 // BACKUP MANAGEMENT
 // ========================
-
-const fs = require('fs');
-const pathModule = require('path');
 
 const BACKUP_DIR = pathModule.join(__dirname, '..', 'data', 'backups');
 if (!fs.existsSync(BACKUP_DIR)) {
@@ -625,6 +626,62 @@ router.get('/api/audit-logs', (req, res) => {
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
+});
+
+// ========================
+// SYSTEM UPDATE (GITHUB)
+// ========================
+
+const GITHUB_RAW_PKG = 'https://raw.githubusercontent.com/einvacode/smtadaro/main/package.json';
+
+router.get('/api/system/info', (req, res) => {
+  try {
+    const pkg = JSON.parse(fs.readFileSync(pathModule.join(__dirname, '..', 'package.json'), 'utf8'));
+    res.json({ version: pkg.version });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+router.get('/api/system/check-update', (req, res) => {
+  if (req.user.role !== 'admin') return res.status(403).json({ error: 'Admin only' });
+
+  https.get(GITHUB_RAW_PKG, (response) => {
+    let data = '';
+    response.on('data', (chunk) => { data += chunk; });
+    response.on('end', () => {
+      try {
+        const remotePkg = JSON.parse(data);
+        const localPkg = JSON.parse(fs.readFileSync(pathModule.join(__dirname, '..', 'package.json'), 'utf8'));
+        
+        res.json({
+          currentVersion: localPkg.version,
+          latestVersion: remotePkg.version,
+          updateAvailable: remotePkg.version !== localPkg.version
+        });
+      } catch (e) {
+        res.status(500).json({ error: 'Failed to parse remote version info' });
+      }
+    });
+  }).on('error', (err) => {
+    res.status(500).json({ error: 'Failed to fetch update info: ' + err.message });
+  });
+});
+
+router.post('/api/system/update', (req, res) => {
+  if (req.user.role !== 'admin') return res.status(403).json({ error: 'Admin only' });
+
+  logAction(req.user.id, 'System Update', 'Triggered git pull update', req.ip);
+
+  exec('git pull', { cwd: pathModule.join(__dirname, '..') }, (error, stdout, stderr) => {
+    if (error) {
+      logAction(req.user.id, 'Update Failed', error.message, req.ip);
+      return res.status(500).json({ error: error.message, details: stderr });
+    }
+    
+    logAction(req.user.id, 'Update Success', stdout, req.ip);
+    res.json({ success: true, output: stdout });
+  });
 });
 
 module.exports = router;

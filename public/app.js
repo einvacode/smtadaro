@@ -574,6 +574,64 @@ async function loadSettings() {
   loadLandingSettings();
   loadLogoPreview();
   loadAuditLogs();
+  checkUpdate();
+}
+
+// --- System Update ---
+async function checkUpdate() {
+  const area = document.getElementById('updateStatusArea');
+  if (!area) return;
+
+  // Reset UI
+  document.getElementById('updateChecking').style.display = 'block';
+  document.getElementById('updateInfo').style.display = 'none';
+  document.getElementById('updateNone').style.display = 'none';
+  document.getElementById('updateProgress').style.display = 'none';
+  document.getElementById('updateOutput').style.display = 'none';
+
+  try {
+    const res = await api('/api/system/check-update');
+    document.getElementById('currentVersionTag').textContent = 'v' + res.currentVersion;
+    document.getElementById('updateChecking').style.display = 'none';
+
+    if (res.updateAvailable) {
+      document.getElementById('updateInfo').style.display = 'block';
+      document.getElementById('remoteVersion').textContent = res.latestVersion;
+    } else {
+      document.getElementById('updateNone').style.display = 'block';
+    }
+  } catch (err) {
+    document.getElementById('updateChecking').innerHTML = `
+      <p style="color: var(--red); margin-bottom: 10px;">Gagal mengecek update</p>
+      <p style="font-size: 0.8rem; color: var(--text-muted);">${err.message}</p>
+      <button class="btn btn-glass btn-sm" style="margin-top: 15px;" onclick="checkUpdate()">Coba Lagi</button>
+    `;
+  }
+}
+
+async function runUpdate() {
+  if (!confirm('Aplikasi akan diperbarui menggunakan Git Pull. Lanjutkan?')) return;
+
+  document.getElementById('updateInfo').style.display = 'none';
+  document.getElementById('updateProgress').style.display = 'block';
+  document.getElementById('updateOutput').style.display = 'none';
+
+  try {
+    const res = await api('/api/system/update', { method: 'POST' });
+    
+    document.getElementById('updateProgress').style.display = 'none';
+    document.getElementById('updateOutput').style.display = 'block';
+    document.getElementById('updateOutputText').textContent = res.output || 'Update selesai tanpa output.';
+    
+    showToast('Update berhasil! Me-refresh halaman...', 'success');
+    setTimeout(() => window.location.reload(), 3000);
+  } catch (err) {
+    document.getElementById('updateProgress').style.display = 'none';
+    document.getElementById('updateOutput').style.display = 'block';
+    document.getElementById('updateOutputText').textContent = 'ERROR: ' + err.message + (err.details ? '\n\n' + err.details : '');
+    document.getElementById('updateOutputText').style.color = 'var(--red)';
+    showToast('Update gagal: ' + err.message, 'error');
+  }
 }
 
 // --- Audit Logs ---
